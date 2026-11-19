@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix"
   },
@@ -22,6 +22,9 @@
   },
   "homepage": "https://github.com/Devpatel2912/workshops-seat-booking#readme",
   "dependencies": {
+    "@better-auth/prisma-adapter": "^1.7.26",
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
     "better-auth": "^1.7.25",
     "cors": "^2.8.6",
     "dotenv": "^18.0.10",
@@ -31,6 +34,7 @@
   "devDependencies": {
     "lefthook": "^2.2.2",
     "nodemon": "^3.1.14",
-    "oxlint": "^1.94.0"
+    "oxlint": "^1.94.0",
+    "prisma": "^7.10.1"
   }
 }
