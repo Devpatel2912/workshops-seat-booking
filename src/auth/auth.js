@@ -1,4 +1,3 @@
-
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "../config/prisma.js";
@@ -11,10 +10,8 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  
-  trustedOrigins: [
-    "http://localhost:5173",
-  ],
+
+  trustedOrigins: ["http://localhost:5173"],
 
   secret: process.env.BETTER_AUTH_SECRET,
 

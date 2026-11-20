@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+src/generated/
+generated/
+prisma/
+.env
+.env.*
+package-lock.json

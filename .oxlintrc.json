@@ -1,4 +1,3 @@
-
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
 
@@ -17,9 +16,5 @@
     "eslint/no-console": "off"
   },
 
-  "ignorePatterns": [
-    "node_modules/**",
-    "dist/**",
-    "coverage/**"
-  ]
+  "ignorePatterns": ["node_modules/**", "dist/**", "coverage/**"]
 }
