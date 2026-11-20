@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import prisma from "../config/prisma.js";
+import { admin } from "better-auth/plugins";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -16,4 +17,12 @@ export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
 
   baseURL: process.env.BETTER_AUTH_URL,
+
+
+  plugins:[
+    admin({
+      defaultRole: "user",
+      adminRoles: ["admin"],
+    }),
+  ],
 });
