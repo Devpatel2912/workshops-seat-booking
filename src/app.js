@@ -3,9 +3,11 @@ import cors from "cors";
 import { toNodeHandler } from "better-auth/node";
 import { httpLogger } from "./logger/logger.js";
 import { auth } from "./auth/auth.js";
+import { responseLogger } from "./middleware/responseLogger.middleware.js";
 
 const app = express();
 app.use(httpLogger);
+app.use(responseLogger);
 
 app.use(
   cors({

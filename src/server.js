@@ -1,10 +1,10 @@
-import dotenv from "dotenv";
-dotenv.config();
+
 import { logger } from "./logger/logger.js";
 import app from "./app.js";
 import prisma from "./config/prisma.js";
+import config from "./config/config.js";
 
-const PORT = process.env.PORT || 5000;
+const PORT = config.app.port;
 
 const startServer = async () => {
   try {
@@ -17,7 +17,8 @@ const startServer = async () => {
       logger.info(`API URL: http://localhost:${PORT}`);
     });
   } catch (error) {
-    logger.error("Server startup failed:", error);
+    logger.error({ err: error }, "Server startup failed");
+
     await prisma.$disconnect();
     process.exit(1);
   }

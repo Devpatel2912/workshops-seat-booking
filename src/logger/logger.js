@@ -1,39 +1,56 @@
+
 import "dotenv/config";
+import { randomUUID } from "node:crypto";
 import pino from "pino";
 import pinoHttp from "pino-http";
+import config from "../config/config.js";
 
 export const logger = pino({
-  level: process.env.LOG_LEVEL || "info",
+  level: config.logger.level,
 
   messageKey: "message",
 
-  base:{
-    service:process.env.SERVICE_NAME || "workshop-seat-booking",
-    env: process.env.NODE_ENV || "development",
+  base: {
+    service: config.logger.service,
+    env: config.app.env,
   },
 
-  formatters:{
-    level(label){
-      return {label: label};
-    }
+  formatters: {
+    level(label) {
+      return { level: label };
+    },
   },
 
   timestamp: pino.stdTimeFunctions.isoTime,
-
-  redact: {
-    paths: [
-      "req.headers.authorization",
-      "req.headers.cookie",
-      "res.headers.set-cookie",
-      "password",
-      "token",
-    ],
-    censor: "[REDACTED]",
-  },
 });
+
 
 export const httpLogger = pinoHttp({
   logger,
+
+  genReqId: () => randomUUID(),
+
+  customProps(req) {
+    return {
+      requestId: req.id,
+    };
+  },
+
+  serializers: {
+    req(req) {
+      return {
+        id: req.id,
+        method: req.method,
+        url: req.url,
+      };
+    },
+
+    res(res) {
+      return {
+        statusCode: res.statusCode,
+      };
+    },
+  },
 
   customLogLevel(req, res, err) {
     if (err || res.statusCode >= 500) return "error";
@@ -41,3 +58,4 @@ export const httpLogger = pinoHttp({
     return "info";
   },
 });
+
