@@ -12,9 +12,15 @@ const startServer = async () => {
 
     logger.info("Database connected successfully");
 
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       logger.info(`Server running on port ${PORT}`);
       logger.info(`API URL: http://localhost:${PORT}`);
+    });
+
+    server.on("error", async (error) => {
+      logger.error({ err: error }, `Server failed to start on port ${PORT}`);
+      await prisma.$disconnect();
+      process.exit(1);
     });
   } catch (error) {
     logger.error({ err: error }, "Server startup failed");
