@@ -1,12 +1,12 @@
 
 import express from "express";
 import { toNodeHandler } from "better-auth/node";
-
+import errorHandler from "./middleware/error.middleware.js";
 import { auth } from "./auth/auth.js";
 import workshopRoutes from "./modules/workshops/workshop.routes.js";
 
 const app = express();
-
+app.use(errorHandler);
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 

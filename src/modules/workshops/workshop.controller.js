@@ -1,89 +1,58 @@
 
 import * as workshopService from "./workshop.service.js";
+import asyncHandler from "../../utils/asyncHandler.js";
+import { successResponse } from "../../utils/response.js";
 
-export const create = async (req, res) => {
-  try {
-    const workshop = await workshopService.createWorkshop(req.body);
+export const create = asyncHandler(async (req, res) => {
+  const workshop = await workshopService.createWorkshop(req.body);
 
-    return res.status(201).json({
-      success: true,
-      message: "Workshop created successfully",
-      data: workshop,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+  return successResponse(
+    res,
+    "Workshop created successfully",
+    workshop,
+    201
+  );
+});
 
-export const getAll = async (req, res) => {
-  try {
-    const workshops = await workshopService.getAllWorkshops();
+export const getAll = asyncHandler(async (req, res) => {
+  const workshops = await workshopService.getAllWorkshops();
 
-    return res.status(200).json({
-      success: true,
-      data: workshops,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+  return successResponse(
+    res,
+    "Workshops fetched successfully",
+    workshops
+  );
+});
 
-export const getOne = async (req, res) => {
-  try {
-    const workshop = await workshopService.getWorkshopById(
-      req.params.id
-    );
+export const getOne = asyncHandler(async (req, res) => {
+  const workshop = await workshopService.getWorkshopById(req.params.id);
 
-    return res.status(200).json({
-      success: true,
-      data: workshop,
-    });
-  } catch (error) {
-    return res.status(404).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+  return successResponse(
+    res,
+    "Workshop fetched successfully",
+    workshop
+  );
+});
 
-export const update = async (req, res) => {
-  try {
-    const workshop = await workshopService.updateWorkshop(
-      req.params.id,
-      { ...req.body }
-    );
+export const update = asyncHandler(async (req, res) => {
+  const workshop = await workshopService.updateWorkshop(
+    req.params.id,
+    req.body
+  );
 
-    return res.status(200).json({
-      success: true,
-      message: "Workshop updated successfully",
-      data: workshop,
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+  return successResponse(
+    res,
+    "Workshop updated successfully",
+    workshop
+  );
+});
 
-export const remove = async (req, res) => {
-  try {
-    await workshopService.deleteWorkshop(req.params.id);
+export const remove = asyncHandler(async (req, res) => {
+  await workshopService.deleteWorkshop(req.params.id);
 
-    return res.status(200).json({
-      success: true,
-      message: "Workshop deleted successfully",
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+  return successResponse(
+    res,
+    "Workshop deleted successfully",
+    null
+  );
+});
