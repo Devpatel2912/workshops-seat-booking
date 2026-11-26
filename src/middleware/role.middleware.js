@@ -1,6 +1,7 @@
 
 import { auth } from "../auth/auth.js";
 import { fromNodeHeaders } from "better-auth/node";
+import { AccessDeniedError } from "../common/error/ApiError.js";
 
 export const authenticate = async (req, res, next) => {
   try {
@@ -34,10 +35,7 @@ export const allowRoles = (...roles) => {
     }
 
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({
-        success: false,
-        message: "You are not authorized",
-      });
+      throw new AccessDeniedError("You have not permistion!")
     }
 
     next();

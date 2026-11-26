@@ -4,15 +4,13 @@ import { toNodeHandler } from "better-auth/node";
 import errorHandler from "./middleware/error.middleware.js";
 import { auth } from "./auth/auth.js";
 import workshopRoutes from "./modules/workshops/workshop.routes.js";
+import requestId from "./middleware/requestId.js";
 
 const app = express();
-app.use(errorHandler);
-
-app.all("/api/auth/*splat", toNodeHandler(auth));
-
 
 app.use(express.json());
-
+app.use(requestId)
+app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.get("/health", (req, res) => {
   res.status(200).json({
@@ -23,5 +21,6 @@ app.get("/health", (req, res) => {
 
 
 app.use("/api/v1/workshop", workshopRoutes);
+app.use(errorHandler);
 
 export default app;

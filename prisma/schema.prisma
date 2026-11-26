@@ -1,3 +1,4 @@
+
 generator client {
   provider               = "prisma-client"
   output                 = "../src/generated/prisma"
@@ -27,7 +28,8 @@ model User {
 
   sessions Session[]
   accounts Account[]
-  
+
+  signupRole String?
 
   @@map("user")
 }
@@ -82,42 +84,39 @@ model Verification {
   @@map("verification")
 }
 
-
 model Workshop {
-  id             String    @id @default(uuid()) @db.Uuid
+  id             String   @id @default(uuid()) @db.Uuid
   title          String
-  eventDate      DateTime  @db.Date
-  startTime      DateTime  @db.Time(0)
-  endTime        DateTime  @db.Time(0)
+  eventDate      DateTime @db.Date
+  startTime      DateTime @db.Time(0)
+  endTime        DateTime @db.Time(0)
   seatLimit      Int
   availableSeats Int
   location       String
-  fees           Decimal   @db.Decimal(10, 2)
+  fees           Decimal  @db.Decimal(10, 2)
 
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  bookings       Booking[]
+  bookings Booking[]
 
   @@index([eventDate])
   @@map("workshops")
 }
 
-
-
-
 model Booking {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String
-  email       String
-  phone       String
-  totalSeats  Int
-  workshopId  String   @db.Uuid
-  createdAt   DateTime @default(now())
+  id         String   @id @default(uuid()) @db.Uuid
+  name       String
+  email      String
+  phone      String
+  totalSeats Int
+  workshopId String   @db.Uuid
+  createdAt  DateTime @default(now())
 
-  workshop    Workshop @relation(fields: [workshopId], references: [id], onDelete: Restrict)
+  workshop Workshop @relation(fields: [workshopId], references: [id], onDelete: Restrict)
 
   @@index([workshopId])
   @@map("bookings")
 }
+
 

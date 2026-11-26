@@ -1,9 +1,15 @@
 
 import prisma from "../../config/prisma.js";
+import ApiError from "../../common/error/ApiError.js";
+import { workshopErrorCodes } from "./error.js";
 
 const parseEventDate = (value) => {
   if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    throw new Error("Invalid event date. Use YYYY-MM-DD");
+    throw new ApiError(
+    400,
+    workshopErrorCodes.invalidDate,
+    "Invalid event date. Use YYYY-MM-DD"
+  );
   }
 
   const date = new Date(`${value}T00:00:00.000Z`);
@@ -23,7 +29,11 @@ const parseTime = (value) => {
     typeof value !== "string" ||
     !/^([01]\d|2[0-3]):[0-5]\d$/.test(value)
   ) {
-    throw new Error("Invalid time format. Use HH:mm");
+    throw new ApiError(
+    400,
+    workshopErrorCodes.invalidTime,
+    "Invalid time format. Use HH:mm"
+  );
   }
 
   return new Date(`1970-01-01T${value}:00.000Z`);
@@ -35,7 +45,7 @@ const getToday = () => {
   return today;
 };
 
-const validateDateAndTime = (eventDate, startTime, endTime) => {
+export const validateDateAndTime = (eventDate, startTime, endTime) => {
   const date = parseEventDate(eventDate);
   const start = parseTime(startTime);
   const end = parseTime(endTime);
@@ -54,39 +64,13 @@ const validateDateAndTime = (eventDate, startTime, endTime) => {
 export const createWorkshop = async (data) => {
   const {
     title,
-    eventDate,
-    startTime,
-    endTime,
     seatLimit,
     location,
     fees,
+    date,
+    end,
+    start
   } = data;
-
-  if (
-    !title?.trim() ||
-    !eventDate ||
-    !startTime ||
-    !endTime ||
-    !location?.trim() ||
-    seatLimit === undefined ||
-    fees === undefined
-  ) {
-    throw new Error("All workshop fields are required");
-  }
-
-  if (!Number.isInteger(seatLimit) || seatLimit <= 0) {
-    throw new Error("Seat limit must be a positive integer");
-  }
-
-  if (!Number.isFinite(Number(fees)) || Number(fees) < 0) {
-    throw new Error("Fees cannot be negative");
-  }
-
-  const { date, start, end } = validateDateAndTime(
-    eventDate,
-    startTime,
-    endTime
-  );
 
   return prisma.workshop.create({
     data: {
@@ -118,7 +102,11 @@ export const getAllWorkshops = async () => {
 
 export const getWorkshopById = async (id) => {
   if (!id) {
-    throw new Error("Workshop ID is required");
+    throw new ApiError(
+    400,
+    workshopErrorCodes.invalidId,
+    "Workshop ID is required"
+  );
   }
 
   const workshop = await prisma.workshop.findUnique({
@@ -126,7 +114,10 @@ export const getWorkshopById = async (id) => {
   });
 
   if (!workshop) {
-    throw new Error("Workshop not found");
+    throw new ApiError(
+      workshopErrorCodes.notFound,
+      "Workshop not found"
+    );
   }
 
   return workshop;
@@ -134,7 +125,11 @@ export const getWorkshopById = async (id) => {
 
 export const updateWorkshop = async (id, data) => {
   if (!id) {
-    throw new Error("Workshop ID is required");
+    throw new ApiError(
+    400,
+    workshopErrorCodes.invalidId,
+    "Workshop ID is required"
+  );
   }
 
   const existingWorkshop = await prisma.workshop.findUnique({
@@ -142,7 +137,10 @@ export const updateWorkshop = async (id, data) => {
   });
 
   if (!existingWorkshop) {
-    throw new Error("Workshop not found");
+    throw new ApiError(
+      workshopErrorCodes.notFound,
+      "Workshop not found"
+    );
   }
 
   const {
@@ -158,7 +156,11 @@ export const updateWorkshop = async (id, data) => {
   const newSeatLimit = seatLimit ?? existingWorkshop.seatLimit;
 
   if (!Number.isInteger(newSeatLimit) || newSeatLimit <= 0) {
-    throw new Error("Seat limit must be a positive integer");
+    throw new ApiError(
+    400,
+    workshopErrorCodes.positiveInteger,
+    "Seat limit must be a positive integer"
+  );
   }
 
   const bookedSeats =
@@ -195,15 +197,27 @@ export const updateWorkshop = async (id, data) => {
     fees !== undefined &&
     (!Number.isFinite(Number(fees)) || Number(fees) < 0)
   ) {
-    throw new Error("Fees cannot be negative");
+    throw new ApiError(
+  400,
+  workshopErrorCodes.invalidFees,
+  "Fees cannot be negative"
+);
   }
 
   if (title !== undefined && !title.trim()) {
-    throw new Error("Workshop title cannot be empty");
+    throw new ApiError(
+  400,
+  workshopErrorCodes.requiredTitle,
+  "Workshop title cannot be empty"
+);
   }
 
   if (location !== undefined && !location.trim()) {
-    throw new Error("Workshop location cannot be empty");
+    throw new ApiError(
+  400,
+  workshopErrorCodes.requiredLocation,
+  "Workshop location cannot be empty"
+);
   }
 
   return prisma.workshop.update({
@@ -227,7 +241,11 @@ export const updateWorkshop = async (id, data) => {
 
 export const deleteWorkshop = async (id) => {
   if (!id) {
-    throw new Error("Workshop ID is required");
+    throw new ApiError(
+  400,
+  workshopErrorCodes.invalidId,
+  "Workshop ID is required"
+);
   }
 
   const workshop = await prisma.workshop.findUnique({
@@ -242,13 +260,19 @@ export const deleteWorkshop = async (id) => {
   });
 
   if (!workshop) {
-    throw new Error("Workshop not found");
+    throw new ApiError(
+    404,
+    workshopErrorCodes.workshopNotFound,
+    "Workshop not found"
+  );
   }
 
   if (workshop._count.bookings > 0) {
-    throw new Error(
-      "Cannot delete this workshop because bookings already exist"
-    );
+    throw new ApiError(
+    409,
+    workshopErrorCodes.hasBookings,
+    "Cannot delete this workshop because bookings already exist"
+  );
   }
 
   return prisma.workshop.delete({

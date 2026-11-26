@@ -7,6 +7,7 @@ import {
   authenticate,
   allowRoles,
 } from "../../middleware/role.middleware.js";
+import { createWorkshopValidation } from "./create-workshop.middleware.js";
 
 const router = Router();
 
@@ -15,6 +16,7 @@ router.post(
   "/",
   authenticate,
   allowRoles("organizer"),
+  createWorkshopValidation,
   workshopController.create
 );
 
