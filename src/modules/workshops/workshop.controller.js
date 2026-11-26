@@ -14,15 +14,17 @@ export const create = asyncHandler(async (req, res) => {
   );
 });
 
+
 export const getAll = asyncHandler(async (req, res) => {
-  const workshops = await workshopService.getAllWorkshops();
+  const result = await workshopService.getAllWorkshops(req.query);
 
   return successResponse(
     res,
     "Workshops fetched successfully",
-    workshops
+    result,
   );
 });
+
 
 export const getOne = asyncHandler(async (req, res) => {
   const workshop = await workshopService.getWorkshopById(req.params.id);

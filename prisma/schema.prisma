@@ -1,4 +1,3 @@
-
 generator client {
   provider               = "prisma-client"
   output                 = "../src/generated/prisma"
@@ -87,20 +86,17 @@ model Verification {
 model Workshop {
   id             String   @id @default(uuid()) @db.Uuid
   title          String
-  eventDate      DateTime @db.Date
   startTime      DateTime @db.Time(0)
   endTime        DateTime @db.Time(0)
   seatLimit      Int
   availableSeats Int
   location       String
-  fees           Decimal  @db.Decimal(10, 2)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   bookings Booking[]
 
-  @@index([eventDate])
   @@map("workshops")
 }
 
@@ -118,5 +114,3 @@ model Booking {
   @@index([workshopId])
   @@map("bookings")
 }
-
-
