@@ -13,6 +13,8 @@ const _workshopErr = {
   hasBookings: "WORKSHOP_HAS_BOOKINGS",
   requiredTitle: "WORKSHOP_TITLE_REQUIRED",
   requiredLocation: "WORKSHOP_LOCATION_REQUIRED",
+  pastDate: "WORKSHOP_DATE_IN_PAST",
+  invalidTimeRange: "INVALID_TIME_RANGE",
 };
 
 export const workshopErrorCodes = Object.freeze(_workshopErr);
