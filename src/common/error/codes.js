@@ -1,10 +1,9 @@
-
 const _errCodes = {
-  validationError: "VALIDATION_ERROR",
-  unauthorized: "UNAUTHORIZED",
-  accessDenied: "ACCESS_DENIED",
-  notFound: "NOT_FOUND",
-  internalServerError: "INTERNAL_SERVER_ERROR",
+  validationError: "validation_error",
+  unauthorized: "unauthorized",
+  accessDenied: "access_denied",
+  notFound: "not_found",
+  internalServerError: "internal_server_error",
 };
 
 export const errCodes = Object.freeze(_errCodes);

@@ -51,6 +51,7 @@ export const createWorkshop = async (data) => {
 
 
 export const getAllWorkshops = async (query = {}) => {
+  
   const page = Number(query.page ?? 1);
   const limit = Number(query.limit ?? 10);
 

@@ -3,6 +3,7 @@ import { logger } from "./logger/logger.js";
 import app from "./app.js";
 import prisma from "./config/prisma.js";
 import config from "./config/config.js";
+import { startBookingScheduler } from "./modules/booking/booking.scheduler.js";
 
 const PORT = config.app.port;
 
@@ -29,7 +30,7 @@ const startServer = async () => {
     process.exit(1);
   }
 };
-
+startBookingScheduler();
 const shutdown = async () => {
   logger.info("Shutting down server...");
 
